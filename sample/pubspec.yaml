@@ -1,0 +1,25 @@
+name: ui_sample
+description: A new Flutter application sample for net.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_ui:
+    path: ../../ym_flutter_ui
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
+
+flutter:
+
+  uses-material-design: true

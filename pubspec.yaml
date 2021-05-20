@@ -1,0 +1,54 @@
+name: flutter_ui
+description: A Flutter package for ui component
+version: 0.0.1
+repository: "https://github.com/Jimmuy/flutter_ui"
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+
+  flutter:
+    sdk: flutter
+  sprintf: ^4.0.2 #字符串格式化
+  flutter_svg: ^0.19.1 #svg图片格式支持库
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - images/ic_empty.png
+    - images/ym_common_back.png
+    - images/loading_animation_image0.png
+    - images/loading_animation_image1.png
+    - images/loading_animation_image2.png
+    - images/loading_animation_image3.png
+    - images/loading_animation_image4.png
+    - images/loading_animation_image5.png
+    - images/loading_animation_image6.png
+    - images/loading_animation_image7.png
+    - images/loading_animation_image8.png
+    - images/loading_animation_image9.png
+    - images/loading_animation_image10.png
+    - images/loading_animation_image11.png
+    - images/loading_animation_image12.png
+    - images/loading_animation_image13.png
+    - images/loading_animation_image14.png
+    - images/loading_animation_image15.png
+    - images/loading_animation_image16.png
+    - images/loading_animation_image17.png
+    - images/loading_animation_image18.png
+    - images/loading_animation_image19.png
+    - images/loading_animation_image20.png
+    - images/loading_animation_image21.png
+    - images/loading_animation_image22.png
+    - images/loading_animation_image23.png
+    - images/loading_animation_image24.png
+    - images/loading_animation_image25.png
+    - images/loading_animation_image26.png
+    - images/loading_animation_image27.png
+    - images/loading_animation_image28.png
+    - images/loading_animation_image29.png
