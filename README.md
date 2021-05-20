@@ -1,4 +1,12 @@
 ### 使用说明
+
+```
+flutter_ui:
+  git:
+    url: https://github.com/Jimmuy/flutter_ui.git
+    ref: 'last version' //这行可以不写，不写默认为master最新提交，写了就是指定的提交
+```
+
 #### UiManager
 暴露出配置方法用来配置 flutter_ui 组件库中的UiConfig 上层需要实现UiConfig中的抽象方法.
 * finish():关闭flutter 容器的方法
