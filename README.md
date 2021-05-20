@@ -58,9 +58,9 @@ abstract class DemoStatus<T extends StatefulWidget> extends YmStatus<T, ScString
 | ym_dialog    |                            |统一封装的dialog,包括确认弹框，输入弹框和loading等|
 | YmEmptyView  |                            |的空界面，上图下文|
 | LoadingButton|                            |有loading动画的button,支持自定义颜色和边框等|
-| YMScaffold   |                            |云眸风格的scaffold|
+| YMScaffold   |                            |scaffold|
 | YmStatus     |                            |抽象类，需要上层继承并实现handleError方法,handleError是用来统一处理网络异常情况下的一个api|
 | SCVerificationBox|                        |验证码输入框 安全中心中使用|
 | PageListView |                            |分页列表工具，封装了常用的分页逻辑|
 | PageListHelper|                           |分页辅助类|
-| PYmSafeArea   |                           |                                    |
+| YmSafeArea   |                           |                                    |
