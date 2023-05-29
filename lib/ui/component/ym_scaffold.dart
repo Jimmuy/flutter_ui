@@ -4,16 +4,16 @@ import 'ym_app_bar.dart';
 
 class YMScaffold extends StatelessWidget {
   final dynamic title;
-  final List<Widget> actions;
-  final Widget body;
-  final Key scaffoldKey;
+  final List<Widget>? actions;
+  final Widget? body;
+  final Key? scaffoldKey;
   final bool centerTitle;
 
   ///标题的背景色
   final Color appBarBackgroundColor;
 
   ///页面的背景色
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   ///标题文字的颜色
   final Color titleTextColor;
@@ -21,13 +21,15 @@ class YMScaffold extends StatelessWidget {
   ///状态栏文字的样式
   ///[Brightness.dark]白色文字和icon
   ///[Brightness.light]黑色文字和icon
-  final Brightness brightness;
+  final Brightness? brightness;
+
+  final Widget? floatingActionButton;
 
   ///返回按钮
-  final Widget leading;
+  final Widget? leading;
 
   const YMScaffold({
-    Key key,
+    Key? key,
     this.title,
     this.actions,
     this.body,
@@ -38,6 +40,7 @@ class YMScaffold extends StatelessWidget {
     this.titleTextColor: const Color(0xE6000000),
     this.brightness,
     this.leading,
+    this.floatingActionButton,
   }) : super(key: key);
 
   @override
@@ -47,10 +50,11 @@ class YMScaffold extends StatelessWidget {
       backgroundColor: backgroundColor,
       appBar: _buildAppBar(),
       body: body,
+      floatingActionButton: floatingActionButton,
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget? _buildAppBar() {
     return title is PreferredSizeWidget
         ? title
         : YMAppBar(

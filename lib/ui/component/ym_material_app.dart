@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 
 ///提供了透明状态栏以及可配置各个业务平台相关平台信息的MaterialApp子类
 class YmMaterialApp extends MaterialApp {
-  static BusinessData _data;
+  static BusinessData? _data;
 
   //平台信息
   YmMaterialApp(
-      {Key key,
+      {Key? key,
       BusinessData businessData = const BusinessData.minerva(),
       navigatorKey,
       home,
       routes = const <String, WidgetBuilder>{},
       initialRoute,
-      RouteFactory onGenerateRoute,
+      RouteFactory? onGenerateRoute,
       onGenerateInitialRoutes,
       onUnknownRoute,
       navigatorObservers = const <NavigatorObserver>[],
@@ -28,10 +28,10 @@ class YmMaterialApp extends MaterialApp {
       highContrastDarkTheme,
       themeMode,
       locale,
-      Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
+      Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
       localeListResolutionCallback,
       localeResolutionCallback,
-      supportedLocales,
+      required supportedLocales,
       debugShowMaterialGrid = false,
       showPerformanceOverlay = false,
       checkerboardRasterCacheImages = false,
@@ -51,7 +51,8 @@ class YmMaterialApp extends MaterialApp {
             onGenerateInitialRoutes: onGenerateInitialRoutes,
             onUnknownRoute: onUnknownRoute,
             navigatorObservers: navigatorObservers,
-            builder: builder ?? (context, widget) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), child: widget),
+            builder:
+                builder ?? ((context, widget) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), child: widget!)),
             title: title,
             onGenerateTitle: onGenerateTitle,
             color: color,
@@ -78,7 +79,7 @@ class YmMaterialApp extends MaterialApp {
 
     ///只有debug模式下才会打印日志
     if (!kDebugMode) {
-      debugPrint = (String message, {int wrapWidth}) {};
+      debugPrint = (String? message, {int? wrapWidth}) {};
     }
   }
 
@@ -86,7 +87,12 @@ class YmMaterialApp extends MaterialApp {
   void initStatusBar(isTransparentStatusBar) {
     if (isTransparentStatusBar) {
       // statusBar设置为透明，去除半透明遮罩
-      final SystemUiOverlayStyle _style = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+      final SystemUiOverlayStyle _style = SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        //底部虚拟导航栏颜色
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.transparent,
+      );
       //将style设置到app
       SystemChrome.setSystemUIOverlayStyle(_style);
     }
@@ -98,23 +104,34 @@ class YmMaterialApp extends MaterialApp {
   }
 }
 
+class ProtocolModel {
+  final String name;
+  final int version;
+  final String url;
+
+  ProtocolModel(this.name, this.version, this.url);
+}
+
 ///平台信息 默认有三个命名构造函数提供出来 方便目前已经存在的平台直接使用
 class BusinessData {
   final String name;
   final String desc;
   final int code;
 
-  const BusinessData(this.name, this.desc, this.code);
+  //在main.dart 中注册平台中需要的协议版本
+  final List<ProtocolModel>? protocols;
 
-  const BusinessData.retail() : this("retail", "连锁", 1);
+  const BusinessData(this.name, this.desc, this.code, this.protocols);
 
-  const BusinessData.minerva() : this("minerva", "普教云", 2);
+  const BusinessData.retail({List<ProtocolModel>? protocols}) : this("retail", "海康云眸", 1, protocols);
 
-  const BusinessData.community() : this("hbl", "社区云", 3);
+  const BusinessData.minerva({List<ProtocolModel>? protocols}) : this("minerva", "云眸普教", 2, protocols);
+
+  const BusinessData.community({List<ProtocolModel>? protocols}) : this("hbl", "云眸社区", 3, protocols);
 }
 
 ///获取平台相关的信息
-BusinessData getBusinessInfo() {
+BusinessData? getBusinessInfo() {
   if (YmMaterialApp._data == null)
     throw Exception("you have to use YmMaterialApp in place of MaterialApp and init PlatformData param in your main.dart");
   return YmMaterialApp._data;

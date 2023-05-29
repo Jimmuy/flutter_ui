@@ -2,7 +2,7 @@
 typedef PageNumberFutureBuilder<T> = Future<List<T>> Function(int pageNo, int pageSize);
 
 ///根据上一个页面的最后一条数据分页
-typedef PageTailFutureBuilder<T> = Future<List<T>> Function(int pageNo, int pageSize, T tail);
+typedef PageTailFutureBuilder<T> = Future<List<T?>> Function(int pageNo, int pageSize, T? tail);
 
 enum PageResult {
   ///刷新成功
@@ -26,10 +26,10 @@ abstract class PageHelper<T> {
   int _pageSize;
   int _initialPageNo;
 
-  List<T> _data = [];
+  List<T?>? _data = [];
 
   PageHelper({int pageNo = 1, int pageSize = 20, int initialPageNo = 1})
-      : _pageNo = pageNo ?? initialPageNo ?? 1,
+      : _pageNo = pageNo,
         _pageSize = pageSize,
         _initialPageNo = initialPageNo;
 
@@ -46,13 +46,11 @@ abstract class PageHelper<T> {
 
     ///3、刷新的时候需要清空集合
     if (isRefresh) {
-      _data.clear();
+      _data?.clear();
     }
 
     ///4、页码处理，数据处理
-    if (data != null) {
-      _data.addAll(data);
-    }
+    _data?.addAll(data);
 
     if (result == PageResult.SUCCESS || result == PageResult.R_SUCCESS) {
       _pageNo++;
@@ -61,13 +59,13 @@ abstract class PageHelper<T> {
     return result;
   }
 
-  Future<List<T>> buildFuture();
+  Future<List<T?>> buildFuture();
 
-  PageResult _analysePageResult(List<T> data) {
-    return _pageNo == 1 ? _onRefresh(data) : _onLoad(data);
+  PageResult _analysePageResult(List<T?> data) {
+    return _pageNo == _initialPageNo ? _onRefresh(data) : _onLoad(data);
   }
 
-  PageResult _onRefresh(List<T> result) {
+  PageResult _onRefresh(List<T?>? result) {
     if (result == null || result.isEmpty) {
       return PageResult.EMPTY;
     } else if (result.length < _pageSize) {
@@ -77,7 +75,7 @@ abstract class PageHelper<T> {
     }
   }
 
-  _onLoad(List<T> result) {
+  _onLoad(List<T?>? result) {
     if (result == null || result.length < _pageSize) {
       return PageResult.COMPLETED;
     } else {
@@ -85,7 +83,7 @@ abstract class PageHelper<T> {
     }
   }
 
-  List<T> get data => _data;
+  List<T?>? get data => _data;
 
   factory PageHelper.num(PageNumberFutureBuilder<T> builder, {int pageNo = 1, int pageSize = 20, int initialPageNo = 1}) =>
       _PageNumberHelper<T>(builder, pageNo: pageNo, pageSize: pageSize, initialPageNo: initialPageNo);
@@ -101,7 +99,7 @@ class _PageNumberHelper<T> extends PageHelper<T> {
       : super(pageNo: pageNo, pageSize: pageSize, initialPageNo: initialPageNo);
 
   @override
-  Future<List<T>> buildFuture() => builder(_pageNo, _pageSize);
+  Future<List<T?>> buildFuture() => builder(_pageNo, _pageSize);
 }
 
 class _PageTailHelper<T> extends PageHelper<T> {
@@ -111,5 +109,5 @@ class _PageTailHelper<T> extends PageHelper<T> {
       : super(pageNo: pageNo, pageSize: pageSize, initialPageNo: initialPageNo);
 
   @override
-  Future<List<T>> buildFuture() => builder(_pageNo, _pageSize, _data.isEmpty ? null : _data.last);
+  Future<List<T?>> buildFuture() => builder(_pageNo, _pageSize, _data == null || _data!.isEmpty ? null : _data?.last);
 }

@@ -1,20 +1,18 @@
 name: flutter_ui
 description: A Flutter package for ui component
-version: 0.0.1
-repository: "https://github.com/Jimmuy/flutter_ui"
+version: 1.0.0
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
 
   flutter:
     sdk: flutter
-  sprintf: ^4.0.2 #字符串格式化
-  flutter_svg: ^0.19.1 #svg图片格式支持库
+  sprintf: ^6.0.0 #字符串格式化
+  flutter_svg: ^1.0.0 #svg图片格式支持库
+  pull_to_refresh: ^2.0.0 #下拉刷新组件
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+
 
 flutter:
   uses-material-design: true
@@ -22,33 +20,63 @@ flutter:
   assets:
     - images/ic_empty.png
     - images/ym_common_back.png
-    - images/loading_animation_image0.png
-    - images/loading_animation_image1.png
-    - images/loading_animation_image2.png
-    - images/loading_animation_image3.png
-    - images/loading_animation_image4.png
-    - images/loading_animation_image5.png
-    - images/loading_animation_image6.png
-    - images/loading_animation_image7.png
-    - images/loading_animation_image8.png
-    - images/loading_animation_image9.png
-    - images/loading_animation_image10.png
-    - images/loading_animation_image11.png
-    - images/loading_animation_image12.png
-    - images/loading_animation_image13.png
-    - images/loading_animation_image14.png
-    - images/loading_animation_image15.png
-    - images/loading_animation_image16.png
-    - images/loading_animation_image17.png
-    - images/loading_animation_image18.png
-    - images/loading_animation_image19.png
-    - images/loading_animation_image20.png
-    - images/loading_animation_image21.png
-    - images/loading_animation_image22.png
-    - images/loading_animation_image23.png
-    - images/loading_animation_image24.png
-    - images/loading_animation_image25.png
-    - images/loading_animation_image26.png
-    - images/loading_animation_image27.png
-    - images/loading_animation_image28.png
-    - images/loading_animation_image29.png
+    - images/ym_common_comp_0.png
+    - images/ym_common_comp_0_light.png
+    - images/ym_common_comp_1.png
+    - images/ym_common_comp_1_light.png
+    - images/ym_common_comp_2.png
+    - images/ym_common_comp_2_light.png
+    - images/ym_common_comp_3.png
+    - images/ym_common_comp_3_light.png
+    - images/ym_common_comp_4.png
+    - images/ym_common_comp_4_light.png
+    - images/ym_common_comp_5.png
+    - images/ym_common_comp_5_light.png
+    - images/ym_common_comp_6.png
+    - images/ym_common_comp_6_light.png
+    - images/ym_common_comp_7.png
+    - images/ym_common_comp_7_light.png
+    - images/ym_common_comp_8.png
+    - images/ym_common_comp_8_light.png
+    - images/ym_common_comp_9.png
+    - images/ym_common_comp_9_light.png
+    - images/ym_common_comp_10.png
+    - images/ym_common_comp_10_light.png
+    - images/ym_common_comp_11.png
+    - images/ym_common_comp_11_light.png
+    - images/ym_common_comp_12.png
+    - images/ym_common_comp_12_light.png
+    - images/ym_common_comp_13.png
+    - images/ym_common_comp_13_light.png
+    - images/ym_common_comp_14.png
+    - images/ym_common_comp_14_light.png
+    - images/ym_common_comp_15.png
+    - images/ym_common_comp_15_light.png
+    - images/ym_common_comp_16.png
+    - images/ym_common_comp_16_light.png
+    - images/ym_common_comp_17.png
+    - images/ym_common_comp_17_light.png
+    - images/ym_common_comp_18.png
+    - images/ym_common_comp_18_light.png
+    - images/ym_common_comp_19.png
+    - images/ym_common_comp_19_light.png
+    - images/ym_common_comp_20.png
+    - images/ym_common_comp_20_light.png
+    - images/ym_common_comp_21.png
+    - images/ym_common_comp_21_light.png
+    - images/ym_common_comp_22.png
+    - images/ym_common_comp_22_light.png
+    - images/ym_common_comp_23.png
+    - images/ym_common_comp_23_light.png
+    - images/ym_common_comp_24.png
+    - images/ym_common_comp_24_light.png
+    - images/ym_common_comp_25.png
+    - images/ym_common_comp_25_light.png
+    - images/ym_common_comp_26.png
+    - images/ym_common_comp_26_light.png
+    - images/ym_common_comp_27.png
+    - images/ym_common_comp_27_light.png
+    - images/ym_common_comp_28.png
+    - images/ym_common_comp_28_light.png
+    - images/ym_common_comp_29.png
+    - images/ym_common_comp_29_light.png

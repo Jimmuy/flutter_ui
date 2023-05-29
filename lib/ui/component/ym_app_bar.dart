@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ui/ui/ui_manager.dart';
+import 'package:flutter_ui/ui/flutter_ui.dart';
 
 class TitleText extends StatelessWidget {
   final String text;
@@ -8,7 +8,7 @@ class TitleText extends StatelessWidget {
 
   const TitleText(
     this.text, {
-    Key key,
+    Key? key,
     this.textColor: const Color(0xff454545),
   }) : super(key: key);
 
@@ -20,29 +20,41 @@ class TitleText extends StatelessWidget {
 }
 
 class YMBackButton extends StatelessWidget {
-  final String icon;
-  final String package;
-  final VoidCallback onTap;
+  final String? icon;
+  final String? package;
+  final VoidCallback? onTap;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
       onTap: onTap ??
-          () => Navigator.maybePop(context).then((data) {
+          (() => Navigator.maybePop(context).then((data) {
                 if (!data) {
                   //如果不是flutter栈，则对应关闭当前flutter view 容器
+                  onClose?.call();
                   UiManager.getInstance().getUiConfig().finish();
                 }
-              }),
-      child: _buildBackImage(icon, package));
+              })),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: _buildBackImage(icon, package),
+        ),
+      ));
 
-  Image _buildBackImage(String icon, String package) {
+  Image _buildBackImage(String? icon, String? package) {
     if ((icon == null && package == null) || (icon == null && package != null)) {
-      return Image.asset('images/ym_common_back.png', package: "flutter_ui");
+      return UiManager.getInstance().appBarLeading ??
+          Image.asset(
+            'images/ym_common_back.png',
+            package: "flutter_ui",
+          );
     } else if (icon != null && package == null) {
       return Image.asset(icon);
     } else {
       return Image.asset(
-        icon,
+        icon!,
         package: package,
       );
     }
@@ -52,6 +64,7 @@ class YMBackButton extends StatelessWidget {
     this.icon,
     this.package,
     this.onTap,
+    this.onClose,
   });
 }
 
@@ -80,28 +93,29 @@ class BackTextButton extends StatelessWidget {
 ///YMAppBar(title: '全部门店')
 class YMAppBar extends AppBar {
   YMAppBar({
-    Key key,
-    Widget leading: const YMBackButton(),
+    Key? key,
+    Widget? leading,
     dynamic title,
-    List<Widget> actions,
-    Widget flexibleSpace,
-    PreferredSizeWidget bottom,
+    List<Widget>? actions,
+    Widget? flexibleSpace,
+    PreferredSizeWidget? bottom,
     double elevation = 0,
-    ShapeBorder shape,
-    Color backgroundColor = Colors.white,
-    Brightness brightness,
-    IconThemeData iconTheme,
-    IconThemeData actionsIconTheme,
-    TextTheme textTheme,
+    ShapeBorder? shape,
+    Color? backgroundColor,
+    Brightness? brightness,
+    IconThemeData? iconTheme,
+    IconThemeData? actionsIconTheme,
+    TextTheme? textTheme,
+    SystemUiOverlayStyle? systemOverlayStyle,
     bool primary = true,
-    bool centerTitle = true,
-    double titleSpacing = NavigationToolbar.kMiddleSpacing,
+    bool? centerTitle,
+    double? titleSpacing,
     double toolbarOpacity = 1.0,
     double bottomOpacity = 1.0,
     Color titleTextColor = const Color(0xff454545),
   }) : super(
           key: key,
-          leading: leading,
+          leading: leading ?? const YMBackButton(),
           automaticallyImplyLeading: false,
           title: title is String
               ? TitleText(
@@ -114,13 +128,13 @@ class YMAppBar extends AppBar {
           bottom: bottom,
           elevation: elevation,
           shape: shape,
-          backgroundColor: backgroundColor,
-          brightness: brightness,
+          backgroundColor: backgroundColor ?? Colors.white,
+          systemOverlayStyle: systemOverlayStyle,
           iconTheme: iconTheme,
           textTheme: textTheme,
           primary: primary,
-          centerTitle: centerTitle,
-          titleSpacing: titleSpacing,
+          centerTitle: centerTitle ?? true,
+          titleSpacing: titleSpacing ?? NavigationToolbar.kMiddleSpacing,
           toolbarOpacity: toolbarOpacity,
           bottomOpacity: bottomOpacity,
         );

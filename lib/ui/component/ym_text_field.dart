@@ -10,24 +10,24 @@ enum YMTextInputType { text, multiline, number, phone, datetime, emailAddress, u
 class YMTextField extends StatefulWidget {
   final YMTextInputType keyboardType;
   final int maxLines;
-  final int maxLength;
-  final String hintText;
-  final TextStyle hintStyle;
-  final YMTextFieldCallBack fieldCallBack;
-  final Icon deleteIcon;
+  final int? maxLength;
+  final String? hintText;
+  final TextStyle? hintStyle;
+  final YMTextFieldCallBack? fieldCallBack;
+  final Icon? deleteIcon;
   final bool isShowDelete;
-  final Icon plainIcon;
-  final InputBorder inputBorder;
-  final Widget prefixIcon;
-  final TextStyle textStyle;
+  final Icon? plainIcon;
+  final InputBorder? inputBorder;
+  final Widget? prefixIcon;
+  final TextStyle? textStyle;
   final String text;
 
-  final FormFieldValidator<String> validator;
+  final FormFieldValidator<String>? validator;
   final bool isShowPlain; //是否显示密码明文，目前该功能与右侧删除按钮互斥。只有在输入类型是密码时，才生效
   var _obscureText = true;
 
   YMTextField(
-      {Key key,
+      {Key? key,
       YMTextInputType keyboardType: YMTextInputType.text,
       this.maxLines = 1,
       this.maxLength,
@@ -43,7 +43,7 @@ class YMTextField extends StatefulWidget {
       this.isShowPlain = false,
       this.text = "",
       this.isShowDelete = true})
-      : assert(maxLines == null || maxLines > 0),
+      : assert(maxLines > 0),
         assert(maxLength == null || maxLength > 0),
         keyboardType = maxLines == 1 ? keyboardType : YMTextInputType.multiline,
         super(key: key);
@@ -86,12 +86,8 @@ class _YMTextFieldState extends State<YMTextField> {
   }
 
   ///输入范围
-  List<TextInputFormatter> _getTextInputFormatter() {
-    return _isNumber
-        ? <TextInputFormatter>[
-            WhitelistingTextInputFormatter.digitsOnly,
-          ]
-        : null;
+  List<TextInputFormatter>? _getTextInputFormatter() {
+    return _isNumber ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly] : null;
   }
 
   @override
@@ -100,7 +96,7 @@ class _YMTextFieldState extends State<YMTextField> {
     if (widget.text.isEmpty) return;
     _inputText = widget.text;
     _hasDeleteIcon = (_inputText.isNotEmpty) && widget.isShowDelete;
-    widget.fieldCallBack(_inputText);
+    widget.fieldCallBack!(_inputText);
     setState(() {});
   }
 
@@ -127,12 +123,12 @@ class _YMTextFieldState extends State<YMTextField> {
                       child: new IconButton(
                         alignment: Alignment.center,
                         iconSize: 18.0,
-                        icon: widget.deleteIcon != null ? widget.deleteIcon : Icon(Icons.cancel),
+                        icon: widget.deleteIcon != null ? widget.deleteIcon! : Icon(Icons.cancel),
                         onPressed: () {
                           setState(() {
                             _inputText = "";
                             _hasDeleteIcon = (_inputText.isNotEmpty) && widget.isShowDelete;
-                            widget.fieldCallBack(_inputText);
+                            widget.fieldCallBack!(_inputText);
                           });
                         },
                       ),
@@ -146,7 +142,7 @@ class _YMTextFieldState extends State<YMTextField> {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.all(0.0),
                         iconSize: 18.0,
-                        icon: widget.plainIcon != null ? widget.plainIcon : Icon(Icons.remove_red_eye),
+                        icon: widget.plainIcon != null ? widget.plainIcon! : Icon(Icons.remove_red_eye),
                         onPressed: () {
                           setState(() {
                             widget._obscureText = !widget._obscureText;
@@ -159,7 +155,7 @@ class _YMTextFieldState extends State<YMTextField> {
         setState(() {
           _inputText = str;
           _hasDeleteIcon = (_inputText.isNotEmpty) && widget.isShowDelete;
-          widget.fieldCallBack(_inputText);
+          widget.fieldCallBack!(_inputText);
         });
       },
       keyboardType: _getTextInputType(),

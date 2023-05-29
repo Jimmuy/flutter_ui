@@ -9,29 +9,25 @@ class YmSafeArea extends StatelessWidget {
   /// The [left], [top], [right], [bottom], and [minimum] arguments must not be
   /// null.
   const YmSafeArea({
-    Key key,
+    Key? key,
     this.left = true,
     this.top = true,
     this.right = true,
     this.bottom = true,
     this.minimum = EdgeInsets.zero,
     this.maintainBottomViewPadding = false,
-    @required this.child,
-  })  : assert(left != null),
-        assert(top != null),
-        assert(right != null),
-        assert(bottom != null),
-        super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   const YmSafeArea.only({
-    Key key,
+    Key? key,
     this.left: false,
     this.top: false,
     this.right: false,
     this.bottom: false,
     this.minimum: EdgeInsets.zero,
     this.maintainBottomViewPadding: false,
-    @required this.child,
+    required this.child,
   });
 
   const YmSafeArea.symmetric({
@@ -39,7 +35,7 @@ class YmSafeArea extends StatelessWidget {
     bool horizontal: true,
     this.minimum: EdgeInsets.zero,
     this.maintainBottomViewPadding: false,
-    @required this.child,
+    required this.child,
   })  : this.left = horizontal,
         this.top = vertical,
         this.right = horizontal,
@@ -86,18 +82,18 @@ class YmSafeArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
-    final MediaQueryData data = MediaQuery.of(context);
-    EdgeInsets padding = data.padding;
+    final MediaQueryData? data = MediaQuery.maybeOf(context);
+    EdgeInsets? padding = data?.padding;
     // Bottom padding has been consumed - i.e. by the keyboard
-    if (data.padding.bottom == 0.0 && data.viewInsets.bottom != 0.0 && maintainBottomViewPadding)
-      padding = padding.copyWith(bottom: data.viewPadding.bottom);
+    if (data?.padding.bottom == 0.0 && data?.viewInsets.bottom != 0.0 && maintainBottomViewPadding)
+      padding = padding?.copyWith(bottom: data?.viewPadding.bottom);
 
     return Padding(
       padding: EdgeInsets.only(
-        left: math.max(left ? padding.left : 0.0, minimum.left),
-        top: math.max(top ? padding.top : 0.0, minimum.top),
-        right: math.max(right ? padding.right : 0.0, minimum.right),
-        bottom: math.max(bottom ? padding.bottom : 0.0, minimum.bottom),
+        left: math.max(left ? padding?.left ?? 0 : 0.0, minimum.left),
+        top: math.max(top ? padding?.top ?? 0 : 0.0, minimum.top),
+        right: math.max(right ? padding?.right ?? 0 : 0.0, minimum.right),
+        bottom: math.max(bottom ? padding?.bottom ?? 0 : 0.0, minimum.bottom),
       ),
       child: MediaQuery.removePadding(
         context: context,

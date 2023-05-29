@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui/ui/flutter_ui.dart';
 import 'package:ui_sample/util/dialog_utils.dart' as dialog;
@@ -70,6 +69,19 @@ class DialogWidgetPage extends StatelessWidget {
                   style: style,
                 )),
           ),
+          InkWell(
+            onTap: () => showLoadingDialog(context, "", isLightStyle: true, barrierDismissible: true).show(),
+            child: Container(
+                height: 40,
+                alignment: Alignment.center,
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color: Colors.blue[300],
+                child: Text(
+                  "Loading Dialog Chain",
+                  style: style,
+                )),
+          ),
+          getLoadingImage(true)
         ],
       ),
     );

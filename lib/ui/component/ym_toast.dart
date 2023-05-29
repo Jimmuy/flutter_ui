@@ -1,25 +1,21 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 ///
 /// @author Jimmy
 ///
 class Toast {
-  static OverlayEntry _overlayEntry; //toast靠它加到屏幕上
+  static OverlayEntry? _overlayEntry; //toast靠它加到屏幕上
   static ValueNotifier _showing = ValueNotifier<bool>(false); //toast是否正在showing
-  static DateTime _startedTime; //开启一个新toast的当前时间，用于对比是否已经展示了足够时间
-  static String _msg;
-  static Widget _widget;
-  static ToastPosition _position;
-  static BuildContext _context;
-  static TextStyle _style;
-  static Color _bgColor;
+  static late DateTime _startedTime; //开启一个新toast的当前时间，用于对比是否已经展示了足够时间
+  static String? _msg;
+  static Widget? _widget;
+  static ToastPosition? _position;
+  static BuildContext? _context;
+  static TextStyle? _style;
+  static Color? _bgColor;
 
   static void toast(BuildContext context, String msg,
-      {Widget widget, ToastPosition position = ToastPosition.CENTER, TextStyle style, Color bgColor}) async {
+      {Widget? widget, ToastPosition position = ToastPosition.CENTER, TextStyle? style, Color? bgColor}) async {
     _msg = msg;
     _bgColor = bgColor;
     _style = style;
@@ -37,12 +33,12 @@ class Toast {
           top: _getPositionOffset(context),
           child: Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery.maybeOf(context)?.size.width,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 56.0),
                 child: ValueListenableBuilder(
                   valueListenable: _showing,
-                  builder: (BuildContext context, value, Widget child) => Offstage(
+                  builder: (BuildContext context, dynamic value, Widget? child) => Offstage(
                     offstage: !value,
                     child: Center(
                       child: Card(
@@ -60,17 +56,17 @@ class Toast {
               )),
         );
       });
-      Overlay.of(_context).insert(_overlayEntry);
+      Overlay.of(_context!)?.insert(_overlayEntry!);
     } else {
       //重新绘制UI，类似setState
-      _overlayEntry.markNeedsBuild();
+      _overlayEntry?.markNeedsBuild();
     }
     await Future.delayed(Duration(milliseconds: 2000)); //等待两秒
 
     //2秒后 到底消失不消失
     if (DateTime.now().difference(_startedTime).inMilliseconds >= 2000) {
       _showing.value = false;
-      _overlayEntry.markNeedsBuild();
+      _overlayEntry?.markNeedsBuild();
     }
   }
 
@@ -85,16 +81,16 @@ class Toast {
     } else if (_position == ToastPosition.CENTER_TOP) {
       rate = 1 / 3;
     }
-    return MediaQuery.of(context).size.height * rate;
+    return (MediaQuery.maybeOf(context)?.size.height ?? 0) * rate;
   }
 
   static List<Widget> _buildContent() {
     var widgets = <Widget>[];
     if (_widget != null) {
-      widgets.add(_widget);
+      widgets.add(_widget!);
     }
     widgets.add(Text(
-      _msg,
+      _msg ?? "",
       textAlign: TextAlign.center,
       style: _style ??
           TextStyle(

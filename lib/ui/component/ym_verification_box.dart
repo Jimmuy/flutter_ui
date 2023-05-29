@@ -25,7 +25,7 @@ class SCVerificationBox extends StatefulWidget {
       this.cursorEndIndent = 10,
       this.textController});
 
-  final TextEditingController textController;
+  final TextEditingController? textController;
 
   ///
   /// 几位验证码，一般6位，还有4位的
@@ -40,7 +40,7 @@ class SCVerificationBox extends StatefulWidget {
   ///
   /// 输入完成回调
   ///
-  final ValueChanged onSubmitted;
+  final ValueChanged? onSubmitted;
 
   ///
   /// 每个item的装饰类型，[VerificationBoxItemType]
@@ -50,7 +50,7 @@ class SCVerificationBox extends StatefulWidget {
   ///
   /// 每个item的样式
   ///
-  final Decoration decoration;
+  final Decoration? decoration;
 
   ///
   /// 边框宽度
@@ -60,12 +60,12 @@ class SCVerificationBox extends StatefulWidget {
   ///
   /// 边框颜色
   ///
-  final Color borderColor;
+  final Color? borderColor;
 
   ///
   /// 获取焦点边框的颜色
   ///
-  final Color focusBorderColor;
+  final Color? focusBorderColor;
 
   ///
   /// [VerificationBoxItemType.box] 边框圆角
@@ -75,7 +75,7 @@ class SCVerificationBox extends StatefulWidget {
   ///
   /// 文本样式
   ///
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   ///
   /// 输入完成后是否失去焦点，默认true，失去焦点后，软键盘消失
@@ -95,7 +95,7 @@ class SCVerificationBox extends StatefulWidget {
   ///
   /// 光标颜色
   ///
-  final Color cursorColor;
+  final Color? cursorColor;
 
   ///
   /// 光标宽度
@@ -117,9 +117,9 @@ class SCVerificationBox extends StatefulWidget {
 }
 
 class _VerificationBox extends State<SCVerificationBox> {
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
-  FocusNode _focusNode;
+  FocusNode? _focusNode;
 
   ValueNotifier _boxesNotifier = ValueNotifier('');
 
@@ -127,7 +127,7 @@ class _VerificationBox extends State<SCVerificationBox> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _focusNode!.dispose();
     super.dispose();
   }
 
@@ -139,9 +139,9 @@ class _VerificationBox extends State<SCVerificationBox> {
     _controller = widget.textController ?? TextEditingController();
     _focusNode = FocusNode();
 
-    _controller.addListener(() {
-      _boxesNotifier.value = _controller.text;
-      _onValueChange(_controller.text);
+    _controller!.addListener(() {
+      _boxesNotifier.value = _controller!.text;
+      _onValueChange(_controller!.text);
     });
 
     super.initState();
@@ -157,7 +157,7 @@ class _VerificationBox extends State<SCVerificationBox> {
         children: <Widget>[
           ValueListenableBuilder(
             valueListenable: _boxesNotifier,
-            builder: (context, value, child) {
+            builder: (context, dynamic value, child) {
               return Positioned.fill(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -171,8 +171,8 @@ class _VerificationBox extends State<SCVerificationBox> {
                       decoration: widget.decoration,
                       borderRadius: widget.borderRadius,
                       borderWidth: widget.borderWidth,
-                      borderColor: (_controller.text.length == index ? widget.focusBorderColor : widget.borderColor) ?? widget.borderColor,
-                      showCursor: widget.showCursor && _controller.text.length == index,
+                      borderColor: (_controller!.text.length == index ? widget.focusBorderColor : widget.borderColor) ?? widget.borderColor,
+                      showCursor: widget.showCursor && _controller!.text.length == index,
                       cursorColor: widget.cursorColor,
                       cursorWidth: widget.cursorWidth,
                       cursorIndent: widget.cursorIndent,
@@ -209,9 +209,9 @@ class _VerificationBox extends State<SCVerificationBox> {
       maxLength: widget.count,
       buildCounter: (
         BuildContext context, {
-        int currentLength,
-        int maxLength,
-        bool isFocused,
+        int? currentLength,
+        int? maxLength,
+        bool? isFocused,
       }) {
         return Text('');
       },
@@ -232,12 +232,12 @@ class _VerificationBox extends State<SCVerificationBox> {
 
     if (value.length == widget.count) {
       //避免失去焦点后,还调用onSubmitted方法
-      if (widget.onSubmitted != null && _focusNode.hasFocus) {
-        widget.onSubmitted(value);
+      if (widget.onSubmitted != null && _focusNode!.hasFocus) {
+        widget.onSubmitted!(value);
       }
 
       if (widget.unfocus) {
-        _focusNode.unfocus();
+        _focusNode!.unfocus();
       }
     }
   }
@@ -276,13 +276,13 @@ class VerificationBoxItem extends StatelessWidget {
       this.cursorIndent = 5,
       this.cursorEndIndent = 5});
 
-  final String data;
+  final String? data;
   final VerificationBoxItemType type;
   final double borderWidth;
-  final Color borderColor;
+  final Color? borderColor;
   final double borderRadius;
-  final TextStyle textStyle;
-  final Decoration decoration;
+  final TextStyle? textStyle;
+  final Decoration? decoration;
 
   ///
   /// 是否显示光标
@@ -292,7 +292,7 @@ class VerificationBoxItem extends StatelessWidget {
   ///
   /// 光标颜色
   ///
-  final Color cursorColor;
+  final Color? cursorColor;
 
   ///
   /// 光标宽度
@@ -380,29 +380,29 @@ class SCVerificationBoxCursor extends StatefulWidget {
   ///
   /// 光标颜色
   ///
-  final Color color;
+  final Color? color;
 
   ///
   /// 光标宽度
   ///
-  final double width;
+  final double? width;
 
   ///
   /// 光标距离顶部距离
   ///
-  final double indent;
+  final double? indent;
 
   ///
   /// 光标距离底部距离
   ///
-  final double endIndent;
+  final double? endIndent;
 
   @override
   State<StatefulWidget> createState() => _SCVerificationBoxCursorState();
 }
 
 class _SCVerificationBoxCursorState extends State<SCVerificationBoxCursor> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {

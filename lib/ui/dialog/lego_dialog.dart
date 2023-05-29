@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 class LegoDialog {
   ///================================弹窗属性======================================
   List<Widget> widgetList = []; //弹窗内部所有组件
-  static BuildContext _context; //弹窗上下文
-  BuildContext context; //弹窗上下文
+  static BuildContext? _context; //弹窗上下文
+  BuildContext? context; //弹窗上下文
 
-  double width; //弹窗宽度
-  double height; //弹窗高度
+  double? width; //弹窗宽度
+  double? height; //弹窗高度
   Duration duration = Duration(milliseconds: 250); //弹窗动画出现的时间
   Gravity gravity = Gravity.center; //弹窗出现的位置
   bool gravityAnimationEnable = false; //弹窗出现的位置带有的默认动画是否可用
   Color barrierColor = Colors.black.withOpacity(.3); //弹窗外的背景色
-  BoxConstraints constraints; //弹窗约束
-  Function(Widget child, Animation<double> animation) animatedFunc; //弹窗出现的动画
+  BoxConstraints? constraints; //弹窗约束
+  Function(Widget child, Animation<double> animation)? animatedFunc; //弹窗出现的动画
   bool barrierDismissible = true; //是否点击弹出外部消失
   EdgeInsets margin = EdgeInsets.all(0.0); //弹窗布局的外边距
 
@@ -22,18 +22,19 @@ class LegoDialog {
   /// @params useRootNavigator=true，push是用的嵌套根布局的context
   bool useRootNavigator = true;
 
-  Decoration decoration; //弹窗内的装饰，与backgroundColor和borderRadius互斥
+  Decoration? decoration; //弹窗内的装饰，与backgroundColor和borderRadius互斥
   Color backgroundColor = Colors.white; //弹窗内的背景色
   double borderRadius = 8.0; //弹窗圆角
   get isShowing => _isShowing; //当前 弹窗是否可见
   bool _isShowing = false;
+  Function? _dismissCallBack;
 
   ///============================================================================
   static void init(BuildContext context) {
     _context = context;
   }
 
-  LegoDialog build([BuildContext context]) {
+  LegoDialog build([BuildContext? context]) {
     if (context == null && _context != null) {
       this.context = _context;
       return this;
@@ -45,6 +46,12 @@ class LegoDialog {
   ///添加自定义组件
   LegoDialog widget(Widget child) {
     this.widgetList.add(child);
+    return this;
+  }
+
+  ///添加dialog消失的监听
+  LegoDialog addDialogDismissListener(Function callBack) {
+    this._dismissCallBack = callBack;
     return this;
   }
 
@@ -62,7 +69,7 @@ class LegoDialog {
         child: Align(
           alignment: alignment ?? Alignment.center,
           child: Text(
-            text ?? "",
+            text,
             textAlign: textAlign,
             maxLines: maxLines ?? 1,
             textDirection: textDirection,
@@ -75,7 +82,7 @@ class LegoDialog {
   }
 
   ///适用于作为dialog 子标题 内容可以换行显示 ，或者其他说明组件
-  LegoDialog content(String text, {padding, alignment, textAlign, maxLines, textDirection, overflow, textStyle}) {
+  LegoDialog content(String? text, {padding, alignment, textAlign, maxLines, textDirection, overflow, textStyle}) {
     //默认字体样式
     const defaultStyle = TextStyle(
       color: Colors.black38,
@@ -101,18 +108,18 @@ class LegoDialog {
 
   ///输入框 向dialog中添加输入框
   LegoDialog input(Function(String content) callback,
-      {String content,
-        TextStyle contentStyle,
-        String hint,
-        Color cursorColor,
-        TextStyle hintStyle,
-        double height,
-        outMargin,
-        outPadding,
-        bool obscureText = false,
-        innerPadding,
-        outBorderRadius,
-        outBorderColor}) {
+      {required String content,
+      TextStyle? contentStyle,
+      String? hint,
+      Color? cursorColor,
+      TextStyle? hintStyle,
+      double? height,
+      outMargin,
+      outPadding,
+      bool obscureText = false,
+      innerPadding,
+      outBorderRadius,
+      outBorderColor}) {
     TextEditingController controller = TextEditingController();
     controller.addListener(() {
       callback(controller.value.text);
@@ -129,9 +136,7 @@ class LegoDialog {
           child: TextField(
             style: contentStyle ?? TextStyle(fontSize: 12, color: Color(0xFF595959)),
             obscureText: obscureText,
-            cursorColor: cursorColor ?? Theme
-                .of(context)
-                .primaryColor,
+            cursorColor: cursorColor ?? Theme.of(context!).primaryColor,
             decoration: InputDecoration(
               counter: null,
               counterText: "",
@@ -160,11 +165,11 @@ class LegoDialog {
     leftText,
     leftBgColor = Colors.white,
     leftTextStyle,
-    VoidCallback onLeftTap,
+    VoidCallback? onLeftTap,
     rightText,
     rightTextStyle,
     rightBgColor = Colors.white,
-    VoidCallback onRightTap,
+    VoidCallback? onRightTap,
   }) {
     const textStyle = TextStyle(fontSize: 18);
     return this.widget(
@@ -228,19 +233,22 @@ class LegoDialog {
   }
 
   ///适用于 底部一个按钮，需要可以加入到底部显示
-  LegoDialog singleButton({height = 48.0,
-    backgroundColor = Colors.white,
-    isClickAutoDismiss = true, //点击按钮后自动关闭
-    btnText,
-    btnTextStyle,
-    VoidCallback onBtnTap}) {
+  LegoDialog singleButton(
+      {height = 48.0,
+      backgroundColor = Colors.white,
+      isClickAutoDismiss = true, //点击按钮后自动关闭
+      btnText,
+      btnTextStyle,
+      VoidCallback? onBtnTap}) {
     const textStyle = TextStyle(fontSize: 18);
     return this.widget(
       SizedBox(
         width: double.infinity,
         height: height,
-        child: FlatButton(
-          color: backgroundColor,
+        child: TextButton(
+          style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+            return backgroundColor;
+          })),
           onPressed: () {
             if (onBtnTap != null) onBtnTap();
             if (isClickAutoDismiss) {
@@ -262,7 +270,7 @@ class LegoDialog {
       child: CircularProgressIndicator(
         strokeWidth: strokeWidth ?? 4.0,
         backgroundColor: backgroundColor,
-        valueColor: AlwaysStoppedAnimation<Color>(valueColor),
+        valueColor: AlwaysStoppedAnimation<Color?>(valueColor),
       ),
     ));
   }
@@ -293,6 +301,7 @@ class LegoDialog {
       barrierColor: barrierColor,
       animatedFunc: animatedFunc,
       barrierDismissible: barrierDismissible,
+      dismissCallBack: _dismissCallBack,
       duration: duration,
       child: Padding(
         padding: margin,
@@ -314,9 +323,7 @@ class LegoDialog {
                       color: backgroundColor,
                     ),
                 constraints: constraints ?? BoxConstraints(),
-                child: CustomDialogChildren(
-                    widgetList: widgetList
-                ),
+                child: CustomDialogChildren(widgetList: widgetList),
               ),
             )
           ],
@@ -327,7 +334,7 @@ class LegoDialog {
 
   void dismiss() {
     _isShowing = false;
-    Navigator.of(context, rootNavigator: useRootNavigator).pop();
+    Navigator.maybeOf(context!, rootNavigator: useRootNavigator)?.pop();
   }
 
   getColumnMainAxisAlignment(gravity) {
@@ -392,46 +399,46 @@ class CustomDialogChildren extends StatefulWidget {
 }
 
 class CustomDialogChildState extends State<CustomDialogChildren> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: widget.widgetList,
     );
   }
-
 }
 
 ///弹窗API的封装
 class CustomDialog {
-  BuildContext _context;
+  BuildContext? _context;
   Widget _child;
-  Duration _duration;
-  Color _barrierColor;
-  RouteTransitionsBuilder _transitionsBuilder;
-  bool _barrierDismissible;
-  Gravity _gravity;
-  bool _gravityAnimationEnable;
-  Function _animatedFunc;
+  Duration? _duration;
+  Color? _barrierColor;
+  RouteTransitionsBuilder? _transitionsBuilder;
+  bool? _barrierDismissible;
+  Gravity? _gravity;
+  bool? _gravityAnimationEnable;
+  Function? _animatedFunc;
+  Function? _dismissCallBack;
 
   CustomDialog({
-    @required Widget child,
-    @required BuildContext context,
-    Duration duration,
-    Color barrierColor,
-    RouteTransitionsBuilder transitionsBuilder,
-    Gravity gravity,
-    bool gravityAnimationEnable,
-    Function animatedFunc,
-    bool barrierDismissible,
-  })
-      : _child = child,
+    required Widget child,
+    required BuildContext? context,
+    Duration? duration,
+    Color? barrierColor,
+    RouteTransitionsBuilder? transitionsBuilder,
+    Gravity? gravity,
+    bool? gravityAnimationEnable,
+    Function? animatedFunc,
+    Function? dismissCallBack,
+    bool? barrierDismissible,
+  })  : _child = child,
         _context = context,
         _gravity = gravity,
         _gravityAnimationEnable = gravityAnimationEnable,
         _duration = duration,
         _barrierColor = barrierColor,
         _animatedFunc = animatedFunc,
+        _dismissCallBack = dismissCallBack,
         _transitionsBuilder = transitionsBuilder,
         _barrierDismissible = barrierDismissible {
     this.show();
@@ -444,7 +451,7 @@ class CustomDialog {
     }
 
     showGeneralDialog(
-      context: _context,
+      context: _context!,
       barrierColor: _barrierColor ?? Colors.black.withOpacity(0.3),
       barrierDismissible: _barrierDismissible ?? true,
       barrierLabel: "",
@@ -463,8 +470,8 @@ class CustomDialog {
     );
   }
 
-  Widget _buildMaterialDialogTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
-      Widget child) {
+  Widget _buildMaterialDialogTransitions(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     Animation<Offset> custom;
     switch (_gravity) {
       case Gravity.top:
@@ -506,11 +513,11 @@ class CustomDialog {
 
     //自定义动画
     if (_animatedFunc != null) {
-      return _animatedFunc(child, animation);
+      return _animatedFunc!(child, animation);
     }
 
     //不需要默认动画
-    if (!_gravityAnimationEnable) {
+    if (!_gravityAnimationEnable!) {
       custom = Tween<Offset>(
         begin: Offset(0.0, 0.0),
         end: Offset(0.0, 0.0),
@@ -524,10 +531,13 @@ class CustomDialog {
   }
 
   _onWillPop() {
-    if (_barrierDismissible) {
-      Navigator.of(_context).pop();
+    if (_barrierDismissible!) {
+      Navigator.maybeOf(_context!)?.pop();
     } else {
       return Future.value(false);
+    }
+    if (_dismissCallBack != null) {
+      _dismissCallBack!();
     }
   }
 }

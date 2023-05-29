@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui_sample/util/custom_refresher.dart';
 
@@ -10,6 +9,8 @@ class RefreshWidgetPage extends StatefulWidget {
 }
 
 class _RefreshWidgetPageState extends State<RefreshWidgetPage> {
+  var iymRefreshController = IYMRefreshController.impl(initialRefresh: true);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +20,6 @@ class _RefreshWidgetPageState extends State<RefreshWidgetPage> {
   }
 
   _buildBody() {
-    var iymRefreshController = IYMRefreshController.impl();
     return Container(
       child: YMRefresher(
         child: Container(
@@ -59,6 +59,7 @@ class _RefreshWidgetPageState extends State<RefreshWidgetPage> {
           ///加载失败
           // iymRefreshController.loadFailed();
         },
+        // header: CustomHeader("XXXXXX"),
       ),
     );
   }

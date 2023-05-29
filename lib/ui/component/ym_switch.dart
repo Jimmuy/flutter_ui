@@ -28,22 +28,22 @@ class YMFakeSwitch extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   /// switch的宽度
-  final double width;
+  final double? width;
 
   /// switch的高度
-  final double height;
+  final double? height;
 
-  final Color activeColor;
+  final Color? activeColor;
 
   final DragStartBehavior dragStartBehavior;
 
   final TickerProvider vsync;
 
   const YMFakeSwitch({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
-    @required this.vsync,
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    required this.vsync,
     this.width,
     this.height,
     this.activeColor,
@@ -52,7 +52,7 @@ class YMFakeSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BoxConstraints constraints = width == null || height == null ? null : BoxConstraints.tightFor(width: width, height: height);
+    BoxConstraints? constraints = width == null || height == null ? null : BoxConstraints.tightFor(width: width, height: height);
     return Opacity(
       opacity: onChanged == null ? _kCupertinoSwitchDisabledOpacity : 1.0,
       child: _YmSwitchRenderObjectWidget(
@@ -62,9 +62,7 @@ class YMFakeSwitch extends StatelessWidget {
             context,
           ),
           onChanged: (v) {
-            if (onChanged != null) {
-              onChanged(v);
-            }
+            onChanged(v);
           },
           vsync: vsync,
           dragStartBehavior: dragStartBehavior,
@@ -78,23 +76,21 @@ class YMSwitch extends StatefulWidget {
   /// The [value] parameter must not be null.
   /// The [dragStartBehavior] parameter defaults to [DragStartBehavior.start] and must not be null.
   const YMSwitch({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
+    Key? key,
+    required this.value,
+    required this.onChanged,
     this.activeColor,
     this.controller,
     this.dragStartBehavior = DragStartBehavior.start,
     this.width = defaultSwitchWidth,
     this.height = defaultSwitchHeight,
-  })  : assert(value != null),
-        assert(dragStartBehavior != null),
-        super(key: key);
+  }) : super(key: key);
 
-  final YMSwitchController controller;
+  final YMSwitchController? controller;
 
   final bool value;
 
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   /// switch的宽度
   final double width;
@@ -102,7 +98,7 @@ class YMSwitch extends StatefulWidget {
   /// switch的高度
   final double height;
 
-  final Color activeColor;
+  final Color? activeColor;
 
   final DragStartBehavior dragStartBehavior;
 
@@ -148,7 +144,7 @@ class _YMSwitchState extends State<YMSwitch> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final width = widget.width;
     final height = widget.height;
-    BoxConstraints constraints = width == null || height == null ? null : BoxConstraints.tightFor(width: width, height: height);
+    BoxConstraints? constraints = BoxConstraints.tightFor(width: width, height: height);
     return Opacity(
       opacity: widget.onChanged == null ? _kCupertinoSwitchDisabledOpacity : 1.0,
       child: _YmSwitchRenderObjectWidget(
@@ -158,7 +154,7 @@ class _YMSwitchState extends State<YMSwitch> with TickerProviderStateMixin {
             context,
           ),
           onChanged: (v) {
-            widget.onChanged(v);
+            widget.onChanged!(v);
             setState(() {
               _switchOn = v;
             });
@@ -172,7 +168,7 @@ class _YMSwitchState extends State<YMSwitch> with TickerProviderStateMixin {
 
 class _YmSwitchRenderObjectWidget extends LeafRenderObjectWidget {
   _YmSwitchRenderObjectWidget({
-    Key key,
+    Key? key,
     this.value,
     this.activeColor,
     this.onChanged,
@@ -182,23 +178,23 @@ class _YmSwitchRenderObjectWidget extends LeafRenderObjectWidget {
     this.constraints,
   }) : super(key: key);
 
-  final double radius;
-  final bool value;
-  final Color activeColor;
-  final ValueChanged<bool> onChanged;
-  final TickerProvider vsync;
+  final double? radius;
+  final bool? value;
+  final Color? activeColor;
+  final ValueChanged<bool>? onChanged;
+  final TickerProvider? vsync;
   final DragStartBehavior dragStartBehavior;
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
 
   @override
   _RenderCupertinoSwitch createRenderObject(BuildContext context) {
     return _RenderCupertinoSwitch(
-        value: value,
-        activeColor: activeColor,
+        value: value!,
+        activeColor: activeColor!,
         trackColor: CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context),
         onChanged: onChanged,
-        textDirection: Directionality.of(context),
-        vsync: vsync,
+        textDirection: Directionality.maybeOf(context) ?? TextDirection.ltr,
+        vsync: vsync!,
         constraints: constraints,
         dragStartBehavior: dragStartBehavior,
         painter: YMThumbPainter(radius: radius));
@@ -207,12 +203,12 @@ class _YmSwitchRenderObjectWidget extends LeafRenderObjectWidget {
   @override
   void updateRenderObject(BuildContext context, _RenderCupertinoSwitch renderObject) {
     renderObject
-      ..value = value
-      ..activeColor = activeColor
+      ..value = value!
+      ..activeColor = activeColor!
       ..trackColor = CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context)
       ..onChanged = onChanged
-      ..textDirection = Directionality.of(context)
-      ..vsync = vsync
+      ..textDirection = Directionality.maybeOf(context) ?? TextDirection.ltr
+      ..vsync = vsync!
       ..dragStartBehavior = dragStartBehavior;
   }
 }
@@ -228,19 +224,16 @@ const Duration _kToggleDuration = Duration(milliseconds: 200);
 
 class _RenderCupertinoSwitch extends RenderConstrainedBox {
   _RenderCupertinoSwitch({
-    @required bool value,
-    @required Color activeColor,
-    @required Color trackColor,
-    ValueChanged<bool> onChanged,
-    @required TextDirection textDirection,
-    @required TickerProvider vsync,
+    required bool value,
+    required Color activeColor,
+    required Color trackColor,
+    ValueChanged<bool>? onChanged,
+    required TextDirection textDirection,
+    required TickerProvider vsync,
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    @required YMThumbPainter painter,
-    BoxConstraints constraints,
-  })  : assert(value != null),
-        assert(activeColor != null),
-        assert(vsync != null),
-        _value = value,
+    required YMThumbPainter painter,
+    BoxConstraints? constraints,
+  })  : _value = value,
         _activeColor = activeColor,
         _trackColor = trackColor,
         _onChanged = onChanged,
@@ -281,11 +274,11 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   }
 
   YMThumbPainter _painter;
-  AnimationController _positionController;
-  CurvedAnimation _position;
+  late AnimationController _positionController;
+  late CurvedAnimation _position;
 
-  AnimationController _reactionController;
-  Animation<double> _reaction;
+  late AnimationController _reactionController;
+  late Animation<double> _reaction;
 
   bool get value => _value;
   bool _value;
@@ -294,7 +287,6 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   double verticalSwitchInset = 2;
 
   set value(bool value) {
-    assert(value != null);
     if (value == _value) return;
     _value = value;
     markNeedsSemanticsUpdate();
@@ -311,7 +303,6 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   TickerProvider _vsync;
 
   set vsync(TickerProvider value) {
-    assert(value != null);
     if (value == _vsync) return;
     _vsync = value;
     _positionController.resync(vsync);
@@ -322,7 +313,6 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   Color _activeColor;
 
   set activeColor(Color value) {
-    assert(value != null);
     if (value == _activeColor) return;
     _activeColor = value;
     markNeedsPaint();
@@ -332,16 +322,15 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   Color _trackColor;
 
   set trackColor(Color value) {
-    assert(value != null);
     if (value == _trackColor) return;
     _trackColor = value;
     markNeedsPaint();
   }
 
-  ValueChanged<bool> get onChanged => _onChanged;
-  ValueChanged<bool> _onChanged;
+  ValueChanged<bool>? get onChanged => _onChanged;
+  ValueChanged<bool>? _onChanged;
 
-  set onChanged(ValueChanged<bool> value) {
+  set onChanged(ValueChanged<bool>? value) {
     if (value == _onChanged) return;
     final bool wasInteractive = isInteractive;
     _onChanged = value;
@@ -355,7 +344,6 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   TextDirection _textDirection;
 
   set textDirection(TextDirection value) {
-    assert(value != null);
     if (_textDirection == value) return;
     _textDirection = value;
     markNeedsPaint();
@@ -364,15 +352,14 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   DragStartBehavior get dragStartBehavior => _drag.dragStartBehavior;
 
   set dragStartBehavior(DragStartBehavior value) {
-    assert(value != null);
     if (_drag.dragStartBehavior == value) return;
     _drag.dragStartBehavior = value;
   }
 
   bool get isInteractive => onChanged != null;
 
-  TapGestureRecognizer _tap;
-  HorizontalDragGestureRecognizer _drag;
+  late TapGestureRecognizer _tap;
+  late HorizontalDragGestureRecognizer _drag;
 
   @override
   void attach(PipelineOwner owner) {
@@ -408,9 +395,9 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   void _handlePositionStateChanged(AnimationStatus status) {
     if (isInteractive) {
       if (status == AnimationStatus.completed && !_value) {
-        onChanged(_value = true);
+        onChanged!(_value = true);
       } else if (status == AnimationStatus.dismissed && _value) {
-        onChanged(_value = false);
+        onChanged!(_value = false);
       }
     }
   }
@@ -422,7 +409,7 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   ///点击回调，这个时候switch展示的状态没有变化，不需要改变_value
   void _handleTap() {
     if (isInteractive) {
-      onChanged(!_value);
+      onChanged!(!_value);
       _emitVibration();
     }
   }
@@ -445,9 +432,9 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
   void _handleDragUpdate(DragUpdateDetails details) {
     if (isInteractive) {
       _position
-        ..curve = null
+        ..curve = Curves.linear
         ..reverseCurve = null;
-      final double delta = details.primaryDelta / (size.width - horizontalSwitchInset * 2);
+      final double delta = details.primaryDelta! / (size.width - horizontalSwitchInset * 2);
       switch (textDirection) {
         case TextDirection.rtl:
           _positionController.value -= delta;
@@ -472,8 +459,7 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
       case TargetPlatform.iOS:
         HapticFeedback.lightImpact();
         break;
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.android:
+      default:
         break;
     }
   }
@@ -507,7 +493,7 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
     final double currentValue = _position.value;
     final double currentReactionValue = _reaction.value;
 
-    double visualPosition;
+    late double visualPosition;
     switch (textDirection) {
       case TextDirection.rtl:
         visualPosition = 1.0 - currentValue;
@@ -517,7 +503,7 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
         break;
     }
 
-    final Paint paint = Paint()..color = Color.lerp(trackColor, activeColor, currentValue);
+    final Paint paint = Paint()..color = Color.lerp(trackColor, activeColor, currentValue)!;
 
     ///外矩形边框
     final Rect trackRect = Rect.fromLTWH(
@@ -538,13 +524,13 @@ class _RenderCupertinoSwitch extends RenderConstrainedBox {
       trackRect.left + horizontalSwitchInset,
       trackRect.right - radius * 2 - horizontalSwitchInset - currentThumbExtension,
       visualPosition,
-    );
+    )!;
 
     final double thumbRight = lerpDouble(
       trackRect.left + radius * 2 + horizontalSwitchInset + currentThumbExtension,
       trackRect.right - horizontalSwitchInset,
       visualPosition,
-    );
+    )!;
 
     final double thumbCenterY = offset.dy + size.height / 2.0;
     final Rect thumbBounds = Rect.fromLTRB(
@@ -594,8 +580,8 @@ class YMThumbPainter {
   YMThumbPainter({
     this.color = CupertinoColors.white,
     this.shadows = _kSliderBoxShadows,
-    @required this.radius,
-  }) : assert(shadows != null);
+    required this.radius,
+  });
 
   /// The color of the interior of the thumb.
   final Color color;
@@ -606,7 +592,7 @@ class YMThumbPainter {
   final List<BoxShadow> shadows;
 
   /// Half the default diameter of the thumb.
-  final double radius;
+  final double? radius;
 
   /// The default amount the thumb should be extended horizontally when pressed.
   static const double extension = 7.0;
@@ -632,7 +618,7 @@ class YMThumbPainter {
 }
 
 mixin ControllerMixin<T extends State> {
-  T _state;
+  T? _state;
 
   attach(T state) {
     this._state = state;
@@ -642,5 +628,5 @@ mixin ControllerMixin<T extends State> {
     this._state = null;
   }
 
-  T get state => _state;
+  T? get state => _state;
 }

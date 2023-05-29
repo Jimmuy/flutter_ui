@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_ui/ui/dialog/lego_dialog.dart';
 
 import 'ym_loading_button.dart';
@@ -10,7 +9,7 @@ const double DIALOG_WIDTH = 295.0;
 
 ///展示具有两个底部btn的确认框，提供自定义title 和content(非必填)内容的扩展
 LegoDialog showConfirmDialog(BuildContext context, String title, Function(LegoDialog dialog) positiveCallBack,
-    {String content, Function(LegoDialog dialog) negativeCallBack, String negativeText, String positiveText}) {
+    {String? content, Function(LegoDialog dialog)? negativeCallBack, String? negativeText, String? positiveText}) {
   var isContentEmpty = content == null || content.isEmpty;
   var dialog = LegoDialog().build(context)
     ..barrierDismissible = false
@@ -41,7 +40,7 @@ LegoDialog showConfirmDialog(BuildContext context, String title, Function(LegoDi
 ///带输入框的dialog,默认为取消和确定按钮，可自定义，取消默认操作为关闭当前dialog
 LegoDialog showInputDialog(
     BuildContext context, String title, String hint, String content, Function(String callbackContent, LegoDialog dialog) positiveCallback,
-    {String subTitle, String negative, Function(LegoDialog dialog) negativeCallback, String positive, bool obscureText = false}) {
+    {String? subTitle, String? negative, Function(LegoDialog dialog)? negativeCallback, String? positive, bool obscureText = false}) {
   var callbackContent = "";
   var legoDialog = LegoDialog().build(context);
 
@@ -55,14 +54,14 @@ LegoDialog showInputDialog(
     );
   if (subTitle != null) {
     legoDialog
-      ..content(subTitle ?? "",
+      ..content(subTitle,
           textAlign: TextAlign.center,
           padding: EdgeInsets.only(bottom: 8, left: 16, right: 16),
           textStyle: TextStyle(fontSize: 14, color: Color(0x66000000)));
   }
   legoDialog
     ..input((content) => {callbackContent = content},
-        content: content ?? "",
+        content: content,
         obscureText: obscureText,
         contentStyle: TextStyle(color: Color(0xff595959), fontSize: 14),
         hint: hint,
@@ -86,7 +85,7 @@ LegoDialog showInputDialog(
 }
 
 ///展示具有1个底部btn的确认框，提供自定义title 和content(非必填)内容的扩展
-LegoDialog showNoticeDialog(BuildContext context, String title, {String btnText, Function(LegoDialog dialog) callBack}) {
+LegoDialog showNoticeDialog(BuildContext context, String title, {String? btnText, Function(LegoDialog dialog)? callBack}) {
   var dialog = LegoDialog().build(context)
     ..width = DIALOG_WIDTH
     ..title(
@@ -106,29 +105,33 @@ LegoDialog showNoticeDialog(BuildContext context, String title, {String btnText,
 }
 
 ///展示loading状态的dialog 封装在YmUIMixin中使用。
-LegoDialog showLoadingDialog(BuildContext context, String title) {
+LegoDialog showLoadingDialog(BuildContext? context, String title, {bool isLightStyle = false, bool barrierDismissible = false}) {
   var dialog = LegoDialog().build(context)
     ..width = 210
-    ..backgroundColor = Colors.black.withOpacity(0.9)
-    ..barrierDismissible = false
+    ..backgroundColor = isLightStyle ? Colors.white : Colors.black.withOpacity(0.9)
+    ..barrierDismissible = barrierDismissible
     ..barrierColor = Colors.transparent
     ..margin = EdgeInsets.symmetric(horizontal: 50)
     ..widget(Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: ImagesAnimation(
-        w: 32,
-        h: 32,
-        entry: ImagesAnimationEntry(0, 29, 'images/loading_animation_image%s.png'),
-      ),
+      padding: EdgeInsets.only(top: title.isEmpty ? 50 : 20.0),
+      child: getLoadingImage(isLightStyle),
     ))
     ..widget(Padding(
-      padding: const EdgeInsets.only(top: 10.0, bottom: 20),
+      padding: EdgeInsets.only(top: title.isEmpty ? 30 : 10.0, bottom: title.isEmpty ? 0 : 20),
       child: Text(
         title,
         style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
       ),
     ));
   return dialog;
+}
+
+ImagesAnimation getLoadingImage(bool isLightStyle) {
+  return ImagesAnimation(
+    w: 32,
+    h: 32,
+    entry: ImagesAnimationEntry(0, 29, isLightStyle ? 'images/ym_common_comp_%s_light.png' : 'images/ym_common_comp_%s.png'),
+  );
 }
 
 _onCancelTap(negativeCallBack, LegoDialog dialog) {

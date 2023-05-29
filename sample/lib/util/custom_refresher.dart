@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_ui/ui/refresher/indicator/ym_indicator.dart';
-import 'package:flutter_ui/ui/refresher/smart_refresher.dart';
+import 'package:flutter_ui/ui/flutter_ui.dart';
 
 class YMRefresher extends StatelessWidget {
   final Widget child;
@@ -25,8 +24,8 @@ class YMRefresher extends StatelessWidget {
   Widget build(BuildContext context) => SmartRefresher(
       enablePullDown: onRefresh != null,
       enablePullUp: onLoad != null,
-      header: header ?? YmHeader(),
-      footer: footer ?? YmFooter(),
+      header: header ?? UiManager.getInstance().refreshHeader ?? YmHeader(),
+      footer: footer ?? UiManager.getInstance().loadFooter ?? YmFooter(),
       onRefresh: onRefresh,
       onLoading: onLoad,
       controller: (controller as _RefreshControllerImpl)._controller,
@@ -35,17 +34,20 @@ class YMRefresher extends StatelessWidget {
 
 class _RefreshControllerImpl with IYMRefreshController {
   final bool initialRefresh;
-  final bool initialNotify;
+  final RefreshStatus initRefreshStatus;
+  final LoadStatus initLoadStatus;
   final RefreshController _controller;
 
   _RefreshControllerImpl({
     this.initialRefresh: true,
-    this.initialNotify: true,
-  }) : _controller = RefreshController(initialRefresh: initialRefresh, initialNotify: initialNotify);
+    this.initRefreshStatus: RefreshStatus.idle,
+    this.initLoadStatus: LoadStatus.idle,
+  }) : _controller =
+            RefreshController(initialRefresh: initialRefresh, initialRefreshStatus: initRefreshStatus, initialLoadStatus: initLoadStatus);
 
   @override
   Future<void> requestRefresh({bool notify = true, Duration duration = const Duration(milliseconds: 180), Curve curve = Curves.linear}) {
-    return _controller.requestRefresh(notify: notify, duration: duration, curve: curve);
+    return _controller.requestRefresh(needCallback: notify, duration: duration, curve: curve);
   }
 
   @override
@@ -93,8 +95,13 @@ abstract class IYMRefreshController {
 
   void loadComplete();
 
-  factory IYMRefreshController.impl({bool initialRefresh = true, bool initialNotify = true}) => _RefreshControllerImpl(
+  factory IYMRefreshController.impl(
+          {bool initialRefresh = true,
+          RefreshStatus initRefreshStatus = RefreshStatus.idle,
+          LoadStatus initLoadStatus = LoadStatus.idle}) =>
+      _RefreshControllerImpl(
         initialRefresh: initialRefresh,
-        initialNotify: initialNotify,
+        initRefreshStatus: initRefreshStatus,
+        initLoadStatus: initLoadStatus,
       );
 }
